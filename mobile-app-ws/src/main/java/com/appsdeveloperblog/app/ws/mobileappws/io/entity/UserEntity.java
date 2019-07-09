@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
 import java.io.Serializable;
 
 @Entity(name = "users")
@@ -32,7 +33,14 @@ public class UserEntity implements Serializable {
     private String emailVerificationToken;
 
     @Column(nullable = false)
-    private Boolean emailVerificationStatus = false;
+    private Boolean emailVerificationStatus;
+
+    @PrePersist
+    void preInsert() {
+        if (this.emailVerificationStatus == null) {
+            this.emailVerificationStatus = false;
+        }
+    }
 
     public long getId() {
         return id;
