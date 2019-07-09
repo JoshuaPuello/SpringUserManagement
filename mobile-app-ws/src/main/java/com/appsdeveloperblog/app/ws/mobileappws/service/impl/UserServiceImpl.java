@@ -3,6 +3,7 @@ package com.appsdeveloperblog.app.ws.mobileappws.service.impl;
 import com.appsdeveloperblog.app.ws.mobileappws.io.entity.UserEntity;
 import com.appsdeveloperblog.app.ws.mobileappws.repository.UserRepository;
 import com.appsdeveloperblog.app.ws.mobileappws.service.UserService;
+import com.appsdeveloperblog.app.ws.mobileappws.shared.Utils;
 import com.appsdeveloperblog.app.ws.mobileappws.shared.dto.UserDTO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    Utils utils;
+
     @Override
     public UserDTO createUser(UserDTO userDTO) {
 
@@ -24,7 +28,8 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(userDTO, userEntity);
 
         userEntity.setEncryptedPassword("test");
-        userEntity.setUserId("testUserId");
+        String generatedUserId = utils.generateUserId(30);
+        userEntity.setUserId(generatedUserId);
 
         UserEntity storedUser = userRepository.save(userEntity);
 
