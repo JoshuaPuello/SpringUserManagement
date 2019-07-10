@@ -6,13 +6,8 @@ import com.appsdeveloperblog.app.ws.mobileappws.ui.model.request.UserDetailsRequ
 import com.appsdeveloperblog.app.ws.mobileappws.ui.model.response.UserRest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("users")
@@ -21,12 +16,20 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @GetMapping
-    public String getUser() {
-        return "get user was called";
+    @GetMapping(path = "/{id}",
+                produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
+    public UserRest getUser(@PathVariable String id) {
+
+        UserRest returnUser = new UserRest();
+
+        UserDTO userDTO = userService.getUserByUserId(id);
+        BeanUtils.copyProperties(userDTO, returnUser);
+
+        return returnUser;
     }
 
-    @PostMapping
+    @PostMapping(consumes = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE },
+                 produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
     public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) {
 
         UserRest returnUser = new UserRest();

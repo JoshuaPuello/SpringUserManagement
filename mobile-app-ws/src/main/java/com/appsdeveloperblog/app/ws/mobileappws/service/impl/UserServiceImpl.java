@@ -28,6 +28,20 @@ public class UserServiceImpl implements UserService {
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
+    public UserDTO getUserByUserId(String userId) {
+
+        UserDTO returnUser = new UserDTO();
+        UserEntity userEntity = userRepository.findUserByUserId(userId);
+
+        if (userEntity == null) throw new UsernameNotFoundException(userId);
+
+        BeanUtils.copyProperties(userEntity, returnUser);
+
+        return returnUser;
+
+    }
+
+    @Override
     public UserDTO createUser(UserDTO userDTO) {
 
         if (userRepository.findUserByEmail(userDTO.getEmail()) != null)
