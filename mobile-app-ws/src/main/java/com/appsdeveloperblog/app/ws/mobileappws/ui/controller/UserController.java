@@ -1,8 +1,10 @@
 package com.appsdeveloperblog.app.ws.mobileappws.ui.controller;
 
+import com.appsdeveloperblog.app.ws.mobileappws.exceptions.UserServiceException;
 import com.appsdeveloperblog.app.ws.mobileappws.service.UserService;
 import com.appsdeveloperblog.app.ws.mobileappws.shared.dto.UserDTO;
 import com.appsdeveloperblog.app.ws.mobileappws.ui.model.request.UserDetailsRequestModel;
+import com.appsdeveloperblog.app.ws.mobileappws.ui.model.response.ErrorMessages;
 import com.appsdeveloperblog.app.ws.mobileappws.ui.model.response.UserRest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,9 @@ public class UserController {
     public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) {
 
         UserRest returnUser = new UserRest();
+
+        if (userDetails.getFirstName().isEmpty())
+            throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
 
         UserDTO userDTO = new UserDTO();
         BeanUtils.copyProperties(userDetails, userDTO);
