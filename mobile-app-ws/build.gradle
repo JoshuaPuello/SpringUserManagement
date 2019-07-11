@@ -4,6 +4,7 @@ plugins {
 }
 
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'war'
 
 group = 'com.appsdeveloperblog.app.ws'
 version = '0.0.1-SNAPSHOT'
@@ -22,5 +23,7 @@ dependencies {
 	compile group: 'mysql', name: 'mysql-connector-java', version: '8.0.16'
 	compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
 
+	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
+	
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
