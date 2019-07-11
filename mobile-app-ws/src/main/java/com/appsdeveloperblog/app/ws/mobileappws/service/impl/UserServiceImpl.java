@@ -9,6 +9,9 @@ import com.appsdeveloperblog.app.ws.mobileappws.shared.dto.UserDTO;
 import com.appsdeveloperblog.app.ws.mobileappws.ui.model.response.ErrorMessages;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -16,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -117,6 +121,24 @@ public class UserServiceImpl implements UserService {
                     "id", userId));
 
         userRepository.delete(userEntity);
+    }
+
+    @Override
+    public List<UserDTO> getUsers(int page, int limit) {
+
+        List<UserDTO> resultUsers = new ArrayList<>();
+        Pageable pageableRequest = PageRequest.of(page, limit);
+
+        Page<UserEntity> userEntitiesPage = userRepository.findAll(pageableRequest);
+        List<UserEntity> userEntities = userEntitiesPage.getContent();
+
+        for (UserEntity userEntity : userEntities) {
+            UserDTO userDTO = new UserDTO();
+            BeanUtils.copyProperties(userEntity, userDTO);
+            resultUsers.add(userDTO);
+        }
+
+        return resultUsers;
     }
 
     @Override
