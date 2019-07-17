@@ -5,8 +5,10 @@ import com.appsdeveloperblog.app.ws.mobileappws.io.entity.UserEntity;
 import com.appsdeveloperblog.app.ws.mobileappws.io.repository.UserRepository;
 import com.appsdeveloperblog.app.ws.mobileappws.service.UserService;
 import com.appsdeveloperblog.app.ws.mobileappws.shared.Utils;
+import com.appsdeveloperblog.app.ws.mobileappws.shared.dto.AddressDTO;
 import com.appsdeveloperblog.app.ws.mobileappws.shared.dto.UserDTO;
 import com.appsdeveloperblog.app.ws.mobileappws.ui.model.response.ErrorMessages;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -56,17 +58,22 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findUserByEmail(userDTO.getEmail()) != null)
             throw new UserServiceException(ErrorMessages.RECORD_ALREADY_EXISTS.getErrorMessage());
 
-        UserEntity userEntity = new UserEntity();
-        BeanUtils.copyProperties(userDTO, userEntity);
+        for (int i = 0; i < userDTO.getAddresses().size(); i++) {
+            AddressDTO address = userDTO.getAddresses().get(i);
+            address.setUserDetails(userDTO);
+            address.setAddressId(utils.generateAddressId(30));
+            userDTO.getAddresses().set(i, address);
+        }
+
+        ModelMapper modelMapper = new ModelMapper();
+        UserEntity userEntity = modelMapper.map(userDTO, UserEntity.class);
 
         String generatedUserId = utils.generateUserId(30);
         userEntity.setUserId(generatedUserId);
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
 
         UserEntity storedUser = userRepository.save(userEntity);
-
-        UserDTO returnUser = new UserDTO();
-        BeanUtils.copyProperties(storedUser, returnUser);
+        UserDTO returnUser = modelMapper.map(storedUser, UserDTO.class);
 
         return returnUser;
     }

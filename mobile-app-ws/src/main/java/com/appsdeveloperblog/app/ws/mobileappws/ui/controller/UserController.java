@@ -8,6 +8,7 @@ import com.appsdeveloperblog.app.ws.mobileappws.ui.model.response.ErrorMessages;
 import com.appsdeveloperblog.app.ws.mobileappws.ui.model.response.OperationStatusModel;
 import com.appsdeveloperblog.app.ws.mobileappws.ui.model.response.RequestOperationStatus;
 import com.appsdeveloperblog.app.ws.mobileappws.ui.model.response.UserRest;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -39,16 +40,14 @@ public class UserController {
                  produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
     public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) {
 
-        UserRest returnUser = new UserRest();
-
         if (userDetails.getFirstName().isEmpty())
             throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
 
-        UserDTO userDTO = new UserDTO();
-        BeanUtils.copyProperties(userDetails, userDTO);
+        ModelMapper modelMapper = new ModelMapper();
+        UserDTO userDTO = modelMapper.map(userDetails, UserDTO.class);
 
         UserDTO createdUser = userService.createUser(userDTO);
-        BeanUtils.copyProperties(createdUser, returnUser);
+        UserRest returnUser = modelMapper.map(createdUser, UserRest.class);
 
         return returnUser;
     }
