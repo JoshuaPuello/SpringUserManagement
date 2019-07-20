@@ -1,6 +1,8 @@
 package com.appsdeveloperblog.app.ws.mobileappws.ui.model.response;
 
-public class AddressRest {
+import org.springframework.hateoas.ResourceSupport;
+
+public class AddressRest extends ResourceSupport {
 
     private String addressId;
     private String city;
