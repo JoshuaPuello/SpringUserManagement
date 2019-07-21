@@ -15,6 +15,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Link;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +23,11 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
 @RestController
-@RequestMapping("users")
+@RequestMapping("/users")
 public class UserController {
 
     @Autowired
@@ -124,12 +128,23 @@ public class UserController {
 
     @GetMapping(path = "/{userId}/addresses/{addressId}",
             produces = { MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE })
-    public AddressRest getUserAddress(@PathVariable String addressId) {
+    public AddressRest getUserAddress(@PathVariable String userId,
+                                      @PathVariable String addressId) {
 
         AddressDTO addressDTO = addressService.getAddress(addressId);
-        ModelMapper modelMapper = new ModelMapper();
 
-        return modelMapper.map(addressDTO, AddressRest.class);
+        ModelMapper modelMapper = new ModelMapper();
+        Link addressLink = linkTo(methodOn(UserController.class).getUserAddress(userId, addressId)).withSelfRel();
+        Link userLink = linkTo(UserController.class).slash(userId).withRel("user");
+        Link addressesLink = linkTo(methodOn(UserController.class).getUserAddresses(userId)).withRel("addresses");
+
+        AddressRest addressRestModel = modelMapper.map(addressDTO, AddressRest.class);
+
+        addressRestModel.add(addressLink);
+        addressRestModel.add(userLink);
+        addressRestModel.add(addressesLink);
+
+        return addressRestModel;
     }
 
 }
