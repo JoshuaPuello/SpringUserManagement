@@ -13,6 +13,8 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.BeanUtils;
 import org.springframework.hateoas.Link;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.Resources;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -116,16 +118,15 @@ public class UserController {
     }
 
     @GetMapping(path = "/{id}/addresses",
-            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public List<AddressRest> getUserAddresses(@PathVariable String id) {
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE, "application/hal+json"})
+    public Resources<AddressRest> getUserAddresses(@PathVariable String id) {
 
         List<AddressRest> addressListRestModel = new ArrayList<>();
 
         List<AddressDTO> addressDTOS = addressService.getAddresses(id);
 
         if (addressDTOS != null && !addressDTOS.isEmpty()) {
-            Type listType = new TypeToken<List<AddressRest>>() {
-            }.getType();
+            Type listType = new TypeToken<List<AddressRest>>() {}.getType();
             addressListRestModel = new ModelMapper().map(addressDTOS, listType);
 
             for (AddressRest addressRest : addressListRestModel) {
@@ -137,13 +138,13 @@ public class UserController {
             }
         }
 
-        return addressListRestModel;
+        return new Resources<>(addressListRestModel);
     }
 
     @GetMapping(path = "/{userId}/addresses/{addressId}",
-            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public AddressRest getUserAddress(@PathVariable String userId,
-                                      @PathVariable String addressId) {
+            produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE, "application/hal+json"})
+    public Resource<AddressRest> getUserAddress(@PathVariable String userId,
+                                               @PathVariable String addressId) {
 
         AddressDTO addressDTO = addressService.getAddress(addressId);
 
@@ -158,7 +159,7 @@ public class UserController {
         addressRestModel.add(userLink);
         addressRestModel.add(addressesLink);
 
-        return addressRestModel;
+        return new Resource<>(addressRestModel);
     }
 
 }
