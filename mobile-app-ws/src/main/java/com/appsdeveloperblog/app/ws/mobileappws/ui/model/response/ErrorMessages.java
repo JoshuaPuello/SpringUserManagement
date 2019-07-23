@@ -2,7 +2,6 @@ package com.appsdeveloperblog.app.ws.mobileappws.ui.model.response;
 
 public enum ErrorMessages {
 
-    MISSING_REQUIRED_FIELD("Missing required field. Please check documentation for required fields"),
     RECORD_ALREADY_EXISTS("Record already exists"),
     INTERNAL_SERVER_ERROR("Internal server error"),
     NO_RECORD_FOUND("Record with field '%s' = '%s' is not found"),

@@ -32,7 +32,7 @@ public class AddressEntity implements Serializable {
     @Column(length = 7, nullable = false)
     private String postalCode;
 
-    @Column(length = 10, nullable = false)
+    @Column(length = 50, nullable = false)
     private String type;
 
     @ManyToOne

@@ -10,7 +10,6 @@ import com.appsdeveloperblog.app.ws.mobileappws.shared.dto.UserDTO;
 import com.appsdeveloperblog.app.ws.mobileappws.ui.model.response.ErrorMessages;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,21 +18,26 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    Utils utils;
+    private final Utils utils;
 
-    @Autowired
-    BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    public UserServiceImpl(UserRepository userRepository, Utils utils, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userRepository = userRepository;
+        this.utils = utils;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
 
     @Override
     public UserDTO getUserByUserId(String userId) {
@@ -58,11 +62,13 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findUserByEmail(userDTO.getEmail()) != null)
             throw new UserServiceException(ErrorMessages.RECORD_ALREADY_EXISTS.getErrorMessage());
 
-        for (int i = 0; i < userDTO.getAddresses().size(); i++) {
-            AddressDTO address = userDTO.getAddresses().get(i);
-            address.setUserDetails(userDTO);
-            address.setAddressId(utils.generateAddressId(30));
-            userDTO.getAddresses().set(i, address);
+        if (userDTO.getAddresses() != null) {
+            for (int i = 0; i < userDTO.getAddresses().size(); i++) {
+                AddressDTO address = userDTO.getAddresses().get(i);
+                address.setUserDetails(userDTO);
+                address.setAddressId(utils.generateAddressId(30));
+                userDTO.getAddresses().set(i, address);
+            }
         }
 
         ModelMapper modelMapper = new ModelMapper();
@@ -73,9 +79,8 @@ public class UserServiceImpl implements UserService {
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
 
         UserEntity storedUser = userRepository.save(userEntity);
-        UserDTO returnUser = modelMapper.map(storedUser, UserDTO.class);
 
-        return returnUser;
+        return modelMapper.map(storedUser, UserDTO.class);
     }
 
     @Override
@@ -104,9 +109,6 @@ public class UserServiceImpl implements UserService {
             throw new UserServiceException(String.format(
                     ErrorMessages.NO_RECORD_FOUND.getErrorMessage(),
                     "id", userId));
-
-        if (user.getFirstName().isEmpty() || user.getLastName().isEmpty())
-            throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
 
         userEntity.setFirstName(user.getFirstName());
         userEntity.setLastName(user.getLastName());

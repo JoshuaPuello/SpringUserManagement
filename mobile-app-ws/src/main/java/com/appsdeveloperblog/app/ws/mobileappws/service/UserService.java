@@ -2,9 +2,11 @@ package com.appsdeveloperblog.app.ws.mobileappws.service;
 
 import com.appsdeveloperblog.app.ws.mobileappws.shared.dto.UserDTO;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional
 public interface UserService extends UserDetailsService {
 
     UserDTO getUserByUserId(String userId);

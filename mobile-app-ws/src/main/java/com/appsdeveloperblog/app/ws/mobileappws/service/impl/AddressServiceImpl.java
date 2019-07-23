@@ -7,7 +7,6 @@ import com.appsdeveloperblog.app.ws.mobileappws.io.repository.UserRepository;
 import com.appsdeveloperblog.app.ws.mobileappws.service.AddressService;
 import com.appsdeveloperblog.app.ws.mobileappws.shared.dto.AddressDTO;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,11 +15,14 @@ import java.util.List;
 @Service
 public class AddressServiceImpl implements AddressService {
 
-    @Autowired
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    AddressRepository addressRepository;
+    private final AddressRepository addressRepository;
+
+    public AddressServiceImpl(UserRepository userRepository, AddressRepository addressRepository) {
+        this.userRepository = userRepository;
+        this.addressRepository = addressRepository;
+    }
 
     @Override
     public List<AddressDTO> getAddresses(String userId) {

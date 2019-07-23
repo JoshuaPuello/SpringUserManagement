@@ -5,7 +5,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import java.io.Serializable;
@@ -34,6 +33,7 @@ public class UserEntity implements Serializable {
 
     @Column(nullable = false)
     private String encryptedPassword;
+
     private String emailVerificationToken;
 
     @Column(nullable = false)
@@ -120,5 +120,4 @@ public class UserEntity implements Serializable {
     public void setAddresses(List<AddressEntity> addresses) {
         this.addresses = addresses;
     }
-
 }

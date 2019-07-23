@@ -1,13 +1,21 @@
 package com.appsdeveloperblog.app.ws.mobileappws.ui.model.request;
 
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 public class UserDetailsRequestModel {
 
+    @NotBlank(message = "First name is mandatory")
     private String firstName;
+
     private String lastName;
+
+    @NotBlank(message = "Email is mandatory")
     private String email;
+
+    @NotBlank(message = "Password is mandatory")
     private String password;
+
     private List<AddressRequestModel> addresses;
 
     public String getFirstName() {
