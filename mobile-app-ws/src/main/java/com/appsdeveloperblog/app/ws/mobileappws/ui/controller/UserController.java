@@ -162,4 +162,20 @@ public class UserController {
         return new Resource<>(addressRestModel);
     }
 
+    @GetMapping(path = "/email-verification", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public OperationStatusModel verifyEmailToken(@RequestParam(value = "toke") String token) {
+        OperationStatusModel operationStatusModel = new OperationStatusModel();
+        operationStatusModel.setOperationName(RequestOperationName.VERIFY_EMAIL.name());
+
+        boolean isVerified = userService.verifyEmailToken(token);
+
+        if (isVerified) {
+            operationStatusModel.setOperationResult(RequestOperationStatus.SUCCESS.name());
+        } else {
+            operationStatusModel.setOperationResult(RequestOperationStatus.SUCCESS.name());
+        }
+
+        return operationStatusModel;
+    }
+
 }

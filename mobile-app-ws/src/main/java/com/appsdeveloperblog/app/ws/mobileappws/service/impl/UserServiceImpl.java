@@ -56,6 +56,22 @@ public class UserServiceImpl implements UserService {
 
     }
 
+
+    @Override
+    public UserDTO getUser(String email) {
+        UserEntity userEntity = userRepository.findUserByEmail(email);
+
+        if (userEntity == null)
+            throw new UserServiceException(String.format(
+                    ErrorMessages.NO_RECORD_FOUND.getErrorMessage(),
+                    "email", email));
+
+        UserDTO returnUser = new UserDTO();
+        BeanUtils.copyProperties(userEntity, returnUser);
+
+        return returnUser;
+    }
+
     @Override
     public UserDTO createUser(UserDTO userDTO) {
 
@@ -74,28 +90,15 @@ public class UserServiceImpl implements UserService {
         ModelMapper modelMapper = new ModelMapper();
         UserEntity userEntity = modelMapper.map(userDTO, UserEntity.class);
 
-        String generatedUserId = utils.generateUserId(30);
-        userEntity.setUserId(generatedUserId);
+        String publicUserId = utils.generateUserId(30);
+        userEntity.setUserId(publicUserId);
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
+        userEntity.setEmailVerificationToken(utils.generateEmailVerificationToken(publicUserId));
+        userEntity.setEmailVerificationStatus(false);
 
         UserEntity storedUser = userRepository.save(userEntity);
 
         return modelMapper.map(storedUser, UserDTO.class);
-    }
-
-    @Override
-    public UserDTO getUser(String email) {
-        UserEntity userEntity = userRepository.findUserByEmail(email);
-
-        if (userEntity == null)
-            throw new UserServiceException(String.format(
-                    ErrorMessages.NO_RECORD_FOUND.getErrorMessage(),
-                    "email", email));
-
-        UserDTO returnUser = new UserDTO();
-        BeanUtils.copyProperties(userEntity, returnUser);
-
-        return returnUser;
     }
 
     @Override
@@ -156,6 +159,27 @@ public class UserServiceImpl implements UserService {
 
         if (userEntity == null) throw new UsernameNotFoundException(email);
 
-        return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), new ArrayList<>());
+        return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), userEntity.getEmailVerificationStatus(),
+                true, true, true, new ArrayList<>());
+    }
+
+    @Override
+    public boolean verifyEmailToken(String token) {
+
+        boolean returnValue = false;
+
+        UserEntity userEntity = userRepository.findUserByEmailVerificationToken(token);
+
+        if (userEntity != null) {
+            boolean hasTokenExpired = Utils.hasTokenExpired(token);
+            if (!hasTokenExpired) {
+                userEntity.setEmailVerificationToken(null);
+                userEntity.setEmailVerificationStatus(Boolean.TRUE);
+                userRepository.save(userEntity);
+                returnValue = true;
+            }
+        }
+
+        return returnValue;
     }
 }
