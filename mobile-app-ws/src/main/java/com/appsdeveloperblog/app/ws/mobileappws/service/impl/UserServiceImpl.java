@@ -4,6 +4,7 @@ import com.appsdeveloperblog.app.ws.mobileappws.exceptions.UserServiceException;
 import com.appsdeveloperblog.app.ws.mobileappws.io.entity.UserEntity;
 import com.appsdeveloperblog.app.ws.mobileappws.io.repository.UserRepository;
 import com.appsdeveloperblog.app.ws.mobileappws.service.UserService;
+import com.appsdeveloperblog.app.ws.mobileappws.shared.AmazonSES;
 import com.appsdeveloperblog.app.ws.mobileappws.shared.Utils;
 import com.appsdeveloperblog.app.ws.mobileappws.shared.dto.AddressDTO;
 import com.appsdeveloperblog.app.ws.mobileappws.shared.dto.UserDTO;
@@ -98,7 +99,11 @@ public class UserServiceImpl implements UserService {
 
         UserEntity storedUser = userRepository.save(userEntity);
 
-        return modelMapper.map(storedUser, UserDTO.class);
+        UserDTO mappedUser = modelMapper.map(storedUser, UserDTO.class);
+
+        new AmazonSES().verifyEmail(mappedUser);
+
+        return mappedUser;
     }
 
     @Override
