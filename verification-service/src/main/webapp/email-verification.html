@@ -22,12 +22,10 @@
                     .done(function (response) {
 
                         if (response["operationResult"] === "SUCCESS") {
-                            alert("SUCCESS");
                             $("#not-successful-result").attr("style", "display: none !important;");
                             $("#successful-result").attr("style", "display: block !important;");
 
                         } else {
-                            alert("ERROR");
                             $("#successful-result").attr("style", "display: none !important;");
                             $("#not-successful-result").attr("style", "display: block !important;");
                         }
@@ -41,13 +39,13 @@
 </head>
 <body>
 
-    <div id="successful-result" style="display:none">
+    <h1 id="successful-result" style="display: none">
         Successful verification
-    </div>
+    </h1>
 
-    <div id="not-successful-result" style="display:none">
+    <h1 id="not-successful-result" style="display: none">
         Verification link has expired
-    </div>
+    </h1>
 
 </body>
 </html>
