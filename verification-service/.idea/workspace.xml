@@ -7,9 +7,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="f5dcfb02-fa9d-4671-a465-d51fb3fafb05" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../mobile-app-ws/src/main/java/com/appsdeveloperblog/app/ws/mobileappws/shared/AmazonSES.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mobile-app-ws/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../mobile-app-ws/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../mobile-app-ws/src/main/java/com/appsdeveloperblog/app/ws/mobileappws/service/impl/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/../mobile-app-ws/src/main/java/com/appsdeveloperblog/app/ws/mobileappws/service/impl/UserServiceImpl.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/webapp/email-verification.html" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/webapp/email-verification.html" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -339,15 +340,16 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1564353773488</updated>
-      <workItem from="1564353780077" duration="4495000" />
+      <workItem from="1564353780077" duration="5597000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="4495000" />
+    <option name="totallyTimeSpent" value="5597000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1280" height="777" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Designer" />
       <window_info id="Image Layers" />
