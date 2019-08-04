@@ -1,5 +1,6 @@
 package com.appsdeveloperblog.app.ws.mobileappws.shared;
 
+import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AmazonSES {
 
-    final String FROM = "joshuapuello@outlook.com";
+    final String FROM = "joshuapp96@gmail.com";
 
     final String SUBJECT = "One last step to complete your registration with PhotoApp";
 
@@ -19,14 +20,14 @@ public class AmazonSES {
     final String HTMLBODY = "<h1>Please verify your email address</h1>"
             + "<p>Thank you for registering with our mobile app. To complete registration process and be able to log in,"
             + " click on the following link: "
-            + "<a href='http://localhost:8082/verification_service_war_exploded/email-verification.html?token=$tokenValue'>"
+            + "<a href='http://ec2-18-231-115-232.sa-east-1.compute.amazonaws.com:8090/verification-service/email-verification.html?token=$tokenValue'>"
             + "Final step to complete your registration" + "</a><br/><br/>"
             + "Thank you! And we are waiting for you inside!";
 
     final String TEXTBODY = "Please verify your email address. "
             + "Thank you for registering with our mobile app. To complete registration process and be able to log in,"
             + " open then the following URL in your browser window: "
-            + " http://localhost:8082/verification_service_war_exploded/email-verification.html?token=$tokenValue"
+            + " http://ec2-18-231-115-232.sa-east-1.compute.amazonaws.com:8090/verification-service/email-verification.html?token=$tokenValue"
             + " Thank you! And we are waiting for you inside!";
 
 
@@ -34,7 +35,7 @@ public class AmazonSES {
             + "<p>Hi, $firstName!</p> "
             + "<p>Someone has requested to reset your password with our project. If it were not you, please ignore it."
             + " otherwise please click on the link below to set a new password: "
-            + "<a href='http://localhost:8082/verification_service_war_exploded/password-reset.html?token=$tokenValue'>"
+            + "<a href='http://ec2-18-231-115-232.sa-east-1.compute.amazonaws.com:8090/verification-service/password-reset.html?token=$tokenValue'>"
             + " Click this link to Reset Password"
             + "</a><br/><br/>"
             + "Thank you!";
@@ -43,13 +44,16 @@ public class AmazonSES {
             + "Hi, $firstName! "
             + "Someone has requested to reset your password with our project. If it were not you, please ignore it."
             + " otherwise please open the link below in your browser window to set a new password:"
-            + " http://localhost:8082/verification_service_war_exploded/password-reset.html?token=$tokenValue"
+            + " http://ec2-18-231-115-232.sa-east-1.compute.amazonaws.com:8090/verification-service/password-reset.html?token=$tokenValue"
             + " Thank you!";
 
 
     public void verifyEmail(UserDTO userDto) {
 
-        AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard().withRegion(Regions.US_EAST_1)
+        AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder
+                .standard()
+                .withCredentials(new EnvironmentVariableCredentialsProvider())
+                .withRegion(Regions.US_EAST_1)
                 .build();
 
         String htmlBodyWithToken = HTMLBODY.replace("$tokenValue", userDto.getEmailVerificationToken());
