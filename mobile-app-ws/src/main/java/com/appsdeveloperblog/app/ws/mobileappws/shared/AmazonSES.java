@@ -50,7 +50,7 @@ public class AmazonSES {
             + " Thank you!";
 
 
-    private AmazonSimpleEmailService createSESClient() throws Exception {
+    private AmazonSimpleEmailService createSESClient() {
 
         return AmazonSimpleEmailServiceClientBuilder
                 .standard()
@@ -59,7 +59,7 @@ public class AmazonSES {
 
     }
 
-    public void verifyEmail(UserDTO userDto) throws Exception {
+    public void verifyEmail(UserDTO userDto) {
 
         AmazonSimpleEmailService client = createSESClient();
 
@@ -81,11 +81,10 @@ public class AmazonSES {
     }
 
     public boolean sendPasswordResetRequest(String firstName, String email, String token) {
+
         boolean returnValue = false;
 
-        AmazonSimpleEmailService client =
-                AmazonSimpleEmailServiceClientBuilder.standard()
-                        .withRegion(Regions.US_EAST_1).build();
+        AmazonSimpleEmailService client = createSESClient();
 
         String htmlBodyWithToken = PASSWORD_RESET_HTMLBODY.replace("$tokenValue", token);
         htmlBodyWithToken = htmlBodyWithToken.replace("$firstName", firstName);
@@ -108,6 +107,7 @@ public class AmazonSES {
                 .withSource(FROM);
 
         SendEmailResult result = client.sendEmail(request);
+
         if (result != null && (result.getMessageId() != null && !result.getMessageId().isEmpty())) {
             returnValue = true;
         }

@@ -4,6 +4,7 @@ import com.appsdeveloperblog.app.ws.mobileappws.service.AddressService;
 import com.appsdeveloperblog.app.ws.mobileappws.service.UserService;
 import com.appsdeveloperblog.app.ws.mobileappws.shared.dto.AddressDTO;
 import com.appsdeveloperblog.app.ws.mobileappws.shared.dto.UserDTO;
+import com.appsdeveloperblog.app.ws.mobileappws.ui.model.request.PasswordResetRequestModel;
 import com.appsdeveloperblog.app.ws.mobileappws.ui.model.request.UserDetailsRequestModel;
 import com.appsdeveloperblog.app.ws.mobileappws.ui.model.response.AddressRest;
 import com.appsdeveloperblog.app.ws.mobileappws.ui.model.response.OperationStatusModel;
@@ -164,6 +165,7 @@ public class UserController {
 
     @GetMapping(path = "/email-verification", produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
     public OperationStatusModel verifyEmailToken(@RequestParam(value = "token") String token) {
+
         OperationStatusModel operationStatusModel = new OperationStatusModel();
         operationStatusModel.setOperationName(RequestOperationName.VERIFY_EMAIL.name());
 
@@ -176,6 +178,27 @@ public class UserController {
         }
 
         return operationStatusModel;
+
+    }
+
+    @PostMapping(path = "/password-reset-request",
+            produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE},
+            consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    public OperationStatusModel requestReset(@RequestBody PasswordResetRequestModel passwordResetRequestModel) {
+
+        OperationStatusModel operationStatusModel = new OperationStatusModel();
+
+        boolean operationResult = userService.requestPasswordReset(passwordResetRequestModel.getEmail());
+
+        operationStatusModel.setOperationName(RequestOperationName.REQUEST_PASSWORD_RESET.name());
+        operationStatusModel.setOperationResult(RequestOperationStatus.ERROR.name());
+
+        if(operationResult) {
+            operationStatusModel.setOperationResult(RequestOperationStatus.SUCCESS.name());
+        }
+
+        return operationStatusModel;
+
     }
 
 }

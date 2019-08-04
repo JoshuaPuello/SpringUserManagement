@@ -45,13 +45,20 @@ public class Utils {
         return tokenExpirationDate.before(todayDate);
     }
 
-    public String generateEmailVerificationToken(String userId) {
-        String token = Jwts.builder()
+    private String generateValidationToken(String userId, long expirationTime) {
+        return Jwts.builder()
                 .setSubject(userId)
-                .setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPIRATION_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(SignatureAlgorithm.HS512, SecurityConstants.getTokenSecret())
                 .compact();
-        return token;
+    }
+
+    public String generateEmailVerificationToken(String userId) {
+        return generateValidationToken(userId, SecurityConstants.EMAIL_VERIFICATION_EXPIRATION_TIME);
+    }
+
+    public String generatePasswordResetToken(String userId) {
+        return generateValidationToken(userId, SecurityConstants.PASSWORD_RESET_EXPIRATION_TIME);
     }
 
 }
