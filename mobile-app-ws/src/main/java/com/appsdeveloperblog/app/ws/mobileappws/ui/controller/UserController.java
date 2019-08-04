@@ -61,7 +61,7 @@ public class UserController {
 
     @PostMapping(consumes = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE},
             produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
-    public UserRest createUser(@Valid @RequestBody UserDetailsRequestModel userDetails) {
+    public UserRest createUser(@Valid @RequestBody UserDetailsRequestModel userDetails) throws Exception {
 
         ModelMapper modelMapper = new ModelMapper();
         UserDTO userDTO = modelMapper.map(userDetails, UserDTO.class);

@@ -10,7 +10,7 @@ import java.util.List;
 public interface UserService extends UserDetailsService {
 
     UserDTO getUserByUserId(String userId);
-    UserDTO createUser(UserDTO user);
+    UserDTO createUser(UserDTO user) throws Exception;
     UserDTO getUser(String email);
     UserDTO updateUser(String userId, UserDTO user);
     void deleteUser(String userId);

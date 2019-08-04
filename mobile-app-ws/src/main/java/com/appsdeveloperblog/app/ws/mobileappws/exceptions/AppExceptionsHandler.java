@@ -41,7 +41,7 @@ public class AppExceptionsHandler {
     @ExceptionHandler(value = {UserServiceException.class})
     public ResponseEntity<Object> handleUserServiceException(UserServiceException ex, WebRequest request) {
 
-        log.info("\nHandling Exception: UserServiceException\n");
+        log.info("\nHandling Exception: UserServiceException\n -> " + ex.getMessage());
 
         ErrorMessage errorMessage = new ErrorMessage(new Date(), ex.getMessage());
 
@@ -51,9 +51,9 @@ public class AppExceptionsHandler {
     @ExceptionHandler(value = {Exception.class})
     public ResponseEntity<Object> handleOtherExceptions(Exception ex, WebRequest request) {
 
-        log.info("\nHandling Exception: Exception\n");
+        log.info("\nHandling Exception: Exception\n -> " + ex.getMessage() + "\n" + ex.getCause());
 
-        ErrorMessage errorMessage = new ErrorMessage(new Date(), ex.getMessage());
+        ErrorMessage errorMessage = new ErrorMessage(new Date(), ex.getMessage() + "\n" + ex.getCause());
 
         return new ResponseEntity<>(errorMessage, new HttpHeaders(), HttpStatus.INTERNAL_SERVER_ERROR);
     }

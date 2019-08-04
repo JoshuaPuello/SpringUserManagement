@@ -1,6 +1,8 @@
 package com.appsdeveloperblog.app.ws.mobileappws.shared;
 
-import com.amazonaws.auth.EnvironmentVariableCredentialsProvider;
+import com.amazonaws.auth.AWSCredentials;
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.auth.profile.ProfileCredentialsProvider;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailService;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder;
@@ -48,13 +50,18 @@ public class AmazonSES {
             + " Thank you!";
 
 
-    public void verifyEmail(UserDTO userDto) {
+    private AmazonSimpleEmailService createSESClient() throws Exception {
 
-        AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder
+        return AmazonSimpleEmailServiceClientBuilder
                 .standard()
-                .withCredentials(new EnvironmentVariableCredentialsProvider())
                 .withRegion(Regions.US_EAST_1)
                 .build();
+
+    }
+
+    public void verifyEmail(UserDTO userDto) throws Exception {
+
+        AmazonSimpleEmailService client = createSESClient();
 
         String htmlBodyWithToken = HTMLBODY.replace("$tokenValue", userDto.getEmailVerificationToken());
         String textBodyWithToken = TEXTBODY.replace("$tokenValue", userDto.getEmailVerificationToken());
